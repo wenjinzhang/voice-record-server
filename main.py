@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, request, json
+from werkzeug.utils import secure_filename
 import os
 app = Flask(__name__)
-
+app.config['UPLOAD_FOLDER'] = "./audio"
 
 @app.route('/acclog', methods=['GET', 'POST'])
 def acclog():
@@ -18,7 +19,15 @@ def acclog():
     writer.close()
     return jsonify(msg="success to upload server")
 
+@app.route("/audio", methods=['POST'])
+def audio():
+    file_storage = request.files.get('audio')
+    file_name = request.form.get('name').replace("/", "_")
+    if file_storage != None:
+        path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+        file_storage.save(path)
 
+    return jsonify(msg="success to upload server")
 @app.route('/')
 def hello_world():
     return 'Voice Service is Running!'
