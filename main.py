@@ -8,10 +8,12 @@ app.config['UPLOAD_FOLDER'] = "./audio"
 def acclog():
     acclog =  json.loads(request.data.decode('utf-8'))
     file_name = acclog['file_name'].replace("/", "_")
-    if not os.path.exists("data"):
-        os.mkdir("data")
+    machine_name = acclog['machine']
+    save_dir = os.path.join("./data", machine_name)
+    if not os.path.exists(save_dir):
+        os.mkdir(save_dir)
 
-    path="{}/{}.csv".format("./data", file_name)
+    path="{}/{}.csv".format(save_dir, file_name)
     writer = open(path, 'w')
     for line in acclog['data']:
         writer.write(line+"\n")
@@ -23,8 +25,12 @@ def acclog():
 def audio():
     file_storage = request.files.get('audio')
     file_name = request.form.get('name').replace("/", "_")
+    machine_name = request.form.get('machine')
     if file_storage != None:
-        path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+        path = os.path.join(app.config['UPLOAD_FOLDER'], machine_name)
+        if not os.path.exists(path):
+            os.mkdir(path)
+        path = os.path.join(path, file_name)
         file_storage.save(path)
 
     return jsonify(msg="success to upload server")
