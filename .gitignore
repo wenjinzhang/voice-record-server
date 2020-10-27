@@ -3,3 +3,4 @@ __pycache__/*
 data/*
 audio/*
 .DS_Store
+accelerometer data/*
