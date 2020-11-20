@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.config['AUDIO_FOLDER'] = "./audio"
 app.config['ACCELEROMETER_FOLDER'] = "./accelerometer data"
 app.config['recording']  = False
-app.config['machine'] = "123"
+app.config['machine'] = ""
 
 
 def check_path(path):
