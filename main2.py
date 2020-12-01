@@ -1,9 +1,13 @@
 from flask import Flask, jsonify, request, json
 from werkzeug.utils import secure_filename
+from pydub.utils import mediainfo
+
 import os
-app = Flask(__name__)
+
+app = Flask(__name__, static_folder="server_audio")
 app.config['AUDIO_FOLDER'] = "./audio"
 app.config['ACCELEROMETER_FOLDER'] = "./accelerometer data"
+app.config['SERVER_ADUIO'] = "./server_audio"
 app.config['recording']  = False
 app.config['machine'] = ""
 
@@ -12,6 +16,24 @@ def check_path(path):
     if not os.path.exists(path):
         os.mkdir(path)
 
+
+@app.route("/audiolist", methods=['GET'])
+def audio_list():
+    base_path = app.config['SERVER_ADUIO']
+    check_path(base_path)
+    audio_list = []
+
+    for file_name in os.listdir(base_path):
+        path = os.path.join(base_path, file_name)
+        length = get_length(path)
+        audio_list.append({"name":file_name, "len":length})
+
+    return jsonify(audio_list)
+
+def get_length(path):
+    info = mediainfo(path)
+    length = int(float(info["duration"])* 1000)
+    return length
 
 @app.route('/acclog', methods=['GET', 'POST'])
 def acclog():
@@ -58,6 +80,7 @@ def syncrecording():
 @app.route("/recording", methods=['GET'])
 def getrecording():
     return jsonify(recording=app.config['recording'], machine = app.config['machine'])
+
 
 
 @app.route('/')
