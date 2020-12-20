@@ -22,8 +22,10 @@ def audio_list():
     base_path = app.config['SERVER_ADUIO']
     check_path(base_path)
     audio_list = []
-
-    for file_name in os.listdir(base_path):
+    paths = sorted(os.listdir(base_path))
+    for file_name in paths:
+        if file_name == ".DS_Store":
+            continue
         path = os.path.join(base_path, file_name)
         length = get_length(path)
         audio_list.append({"name":file_name, "len":length})
@@ -31,7 +33,9 @@ def audio_list():
     return jsonify(audio_list)
 
 def get_length(path):
+    # print(path)
     info = mediainfo(path)
+    # print(info)
     length = int(float(info["duration"])* 1000)
     return length
 
