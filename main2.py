@@ -32,6 +32,16 @@ def audio_list():
 
     return jsonify(audio_list)
 
+@app.route("/playlist", methods=['GET'])
+def play_list():
+    base_path = app.config['SERVER_ADUIO']
+    check_path(base_path)
+    paths = sorted(os.listdir(base_path))
+    paths.remove(".DS_Store")
+    # play_list = ["/server_audio/" + x for x in paths]
+    return jsonify(paths)
+
+
 def get_length(path):
     # print(path)
     info = mediainfo(path)
@@ -48,7 +58,8 @@ def acclog():
     save_dir = os.path.join(app.config['ACCELEROMETER_FOLDER'], machine_name)
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
-
+    base_path = app.config['SERVER_ADUIO']
+    os.remove(base_path+"/"+file_name)
     path="{}/{}.csv".format(save_dir, file_name)
     writer = open(path, 'w')
     writer.write(acclog)
