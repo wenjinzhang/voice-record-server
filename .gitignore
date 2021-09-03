@@ -4,3 +4,4 @@ data/*
 audio/*
 .DS_Store
 accelerometer data/*
+replay_attacker/*

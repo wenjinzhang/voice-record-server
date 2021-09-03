@@ -46,16 +46,21 @@ def play_list2():
     base_path = app.config['SERVER_ADUIO']
     check_path(base_path)
     folders = sorted(os.listdir(base_path))
+    
     play_list = {}
     for folder in folders:
         audio_folers = os.path.join(base_path, folder)
+        
         if not os.path.isdir(audio_folers):
             continue
         audios = sorted(os.listdir(audio_folers))
         play_list[folder] = []
         for audio_file in audios:
+            if audio_file.endswith('.DS_Store'):
+                continue
             play_list[folder].append(os.path.join(folder, audio_file))
     # play_list = ["/server_audio/" + x for x in paths]
+    
     return jsonify(play_list)
 
 
@@ -76,31 +81,36 @@ def acclog():
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
     base_path = app.config['SERVER_ADUIO']
-    os.remove(base_path+"/"+file_name)
+    
     path="{}/{}.csv".format(save_dir, file_name)
     writer = open(path, 'w')
     writer.write(acclog)
     writer.close()
+    os.remove(base_path+"/"+file_name)
     return jsonify(msg="success to upload server")
 
 @app.route('/acc2', methods=['GET', 'POST'])
 def acc2():
     check_path(app.config['ACCELEROMETER_FOLDER'])
-    acclog = request.form.get('acclog');
+    acclog = request.form.get('acclog')
     file_name = request.form.get('name')
     machine_name = request.form.get('machine')
     freqband = request.form.get('freqband')
     save_dir = os.path.join(app.config['ACCELEROMETER_FOLDER'], machine_name, freqband)
     if not os.path.exists(save_dir):
-        os.mkdir(save_dir)
+        os.makedirs(save_dir)
         
     save_dir = os.path.join(app.config['ACCELEROMETER_FOLDER'], machine_name)
+    
     base_path = app.config['SERVER_ADUIO']
-    os.remove(base_path+"/"+file_name)
+    raw_path = base_path+"/"+file_name
+
     path="{}/{}.csv".format(save_dir, file_name)
     writer = open(path, 'w')
     writer.write(acclog)
     writer.close()
+    if os.path.exists(raw_path):
+        os.remove(raw_path)
     return jsonify(msg="success to upload server")
 
 @app.route("/audio", methods=['POST'])
