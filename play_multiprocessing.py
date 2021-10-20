@@ -4,8 +4,7 @@ from pydub import AudioSegment
 from pydub.playback import play
 import os
 
-# base_folder = './replay_attacker/TIMIT_words/wenjin'
-base_folder = './replay_attacker/common_commands'
+base_folder = './replay_attacker/Core_replay'
 # load filenames  
 folders = os.path.join(base_folder)
 file_names = sorted(os.listdir(folders))
