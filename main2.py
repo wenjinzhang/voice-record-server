@@ -83,10 +83,11 @@ def acclog():
     base_path = app.config['SERVER_ADUIO']
     
     path="{}/{}.csv".format(save_dir, file_name)
-    writer = open(path, 'w')
-    writer.write(acclog)
-    writer.close()
-    os.remove(base_path+"/"+file_name)
+    if acclog != "":
+        writer = open(path, 'w')
+        writer.write(acclog)
+        writer.close()
+        os.remove(base_path+"/"+file_name)
     return jsonify(msg="success to upload server")
 
 @app.route('/acc2', methods=['GET', 'POST'])
@@ -106,11 +107,12 @@ def acc2():
     raw_path = base_path+"/"+file_name
 
     path="{}/{}.csv".format(save_dir, file_name)
-    writer = open(path, 'w')
-    writer.write(acclog)
-    writer.close()
-    if os.path.exists(raw_path):
-        os.remove(raw_path)
+    if acclog != "":
+        writer = open(path, 'w')
+        writer.write(acclog)
+        writer.close()
+        if os.path.exists(raw_path):
+            os.remove(raw_path)
     return jsonify(msg="success to upload server")
 
 @app.route("/audio", methods=['POST'])
